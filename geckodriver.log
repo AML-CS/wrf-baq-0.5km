@@ -1,0 +1,71 @@
+1623264002435	geckodriver	INFO	Listening on 127.0.0.1:47728
+1623264002441	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofilemoMvmd"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623264009074	Marionette	INFO	Listening on port 37809
+1623264009171	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
+1623264192722	geckodriver	INFO	Listening on 127.0.0.1:37023
+1623264192732	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofilet5BVkX"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623264194488	Marionette	INFO	Listening on port 41473
+1623264194549	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
+1623264224691	geckodriver	INFO	Listening on 127.0.0.1:37520
+1623264225704	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofilebkb5gO"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623264227612	Marionette	INFO	Listening on port 37876
+1623264227632	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
+1623264920217	geckodriver	INFO	Listening on 127.0.0.1:50728
+1623264920224	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile4ENOrH"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623264922010	Marionette	INFO	Listening on port 37409
+1623264922059	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
+1623267842684	geckodriver	INFO	Listening on 127.0.0.1:36548
+1623267842693	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofile3KRLfm"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623267844548	Marionette	INFO	Listening on port 41230
+1623267844619	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
+1623270471819	geckodriver	INFO	Listening on 127.0.0.1:45669
+1623270471826	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofileGGlkBf"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623270473716	Marionette	INFO	Listening on port 44608
+1623270473738	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
+1623270525549	geckodriver	INFO	Listening on 127.0.0.1:56660
+1623270525558	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofiletqFRAG"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623270527282	Marionette	INFO	Listening on port 42752
+1623270527370	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
+1623284220730	geckodriver	INFO	Listening on 127.0.0.1:45258
+1623284220736	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofileaVZkG6"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623284222875	Marionette	INFO	Listening on port 45845
+1623284222943	Marionette	WARN	TLS certificate errors will be ignored for this session
+1623284228261	geckodriver	INFO	Listening on 127.0.0.1:47007
+1623284229270	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "-foreground" "-no-remote" "-profile" "/tmp/rust_mozprofilevFq3Rm"
+Failed to open connection to "session" message bus: Using X11 for dbus-daemon autolaunch was disabled at compile time, set your DBUS_SESSION_BUS_ADDRESS instead
+Running without a11y support!
+*** You are running in headless mode.
+1623284231346	Marionette	INFO	Listening on port 33281
+1623284231378	Marionette	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: resource://gre/modules/URIFixup.jsm, line 281: NS_ERROR_FAILURE: Should pass a non-null uri
