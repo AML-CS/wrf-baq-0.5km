@@ -1,0 +1,5 @@
+wrfout*
+*.nc
+*.dat
+*.ctl
+.nfs*
