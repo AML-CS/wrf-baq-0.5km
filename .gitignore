@@ -3,3 +3,4 @@ wrfout*
 *.dat
 *.ctl
 .nfs*
+*.log
