@@ -1,6 +1,7 @@
-wrfout*
 *.nc
 *.dat
 *.ctl
 .nfs*
 *.log
+gfs*
+wrf_output
