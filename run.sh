@@ -30,19 +30,19 @@ sbatch ./sbatch-run.sh
 eval "$(conda shell.bash hook)"
 conda activate wrf-baq-1km
 
-nc_variables=(${NC_VARIABLES//,/ })
+# nc_variables=(${NC_VARIABLES//,/ })
 
-wait_file "./wrf_output" && {
-  cat slurm.out.log
+# wait_file "./wrf_output" && {
+#   cat slurm.out.log
 
-  echo "Generate folium gif..."
-  ./generate_folium_gif.py
+#   echo "Generate folium gif..."
+#   ./generate_folium_gif.py
 
-  for i in ${!nc_variables[@]}; do
-    nc_var=${nc_variables[$i]}
-    aws s3api put-object --bucket wrf-baq-1km --key "$nc_var.gif" --body "./gif-images/$nc_var.gif"
-    aws s3api put-object-acl --bucket wrf-baq-1km --key "$nc_var.gif" --acl public-read
-  done
-}
+#   for i in ${!nc_variables[@]}; do
+#     nc_var=${nc_variables[$i]}
+#     aws s3api put-object --bucket wrf-baq-1km --key "$nc_var.gif" --body "./gif-images/$nc_var.gif"
+#     aws s3api put-object-acl --bucket wrf-baq-1km --key "$nc_var.gif" --acl public-read
+#   done
+# }
 
 echo "Done!"

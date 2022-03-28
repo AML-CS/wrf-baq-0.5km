@@ -13,9 +13,8 @@ if __name__ == '__main__':
 	DS_PATH = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/'
 
 	req = requests.get(
-		'{2}gfs.{0:%Y}{0:%m}{0:%d}/{1}/atmos'.format(
+		'{2}gfs.{0:%Y}{0:%m}{0:%d}/{0:%H}/atmos'.format(
 			gfs_start_date,
-			str(gfs_start_date.hour).zfill(2),
 			DS_PATH
 		),
 		stream=True

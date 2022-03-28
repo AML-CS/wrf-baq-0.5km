@@ -28,27 +28,30 @@ if __name__ == '__main__':
     links =  [(
         date,
         str(index).zfill(3)
-    ) for index in range(time_offset, time_offset + 10, 3)]
+    ) for index in range(time_offset, time_offset + 9, 3)]
 
     filelist = [(
-        'gfs.{0:%Y}{0:%m}{0:%d}/{1}/atmos/gfs.t{1}z.pgrb2.0p25.f{2}'.format(
+        '{0}gfs.{1:%Y}{1:%m}{1:%d}/{1:%H}/atmos/gfs.t{1:%H}z.pgrb2.0p25.f{2}'.format(
+            dspath,
             date,
-            str(date.hour).zfill(2),
+            index
+        ),
+        'gfs.{0:%Y}{0:%m}{0:%d}.t{0:%H}z.pgrb2.0p25.f{1}'.format(
+            date,
             index
         ),
         date
     ) for (date, index) in links]
 
-    for (file, date) in filelist:
-        filename=dspath+file
-        file_base = os.path.basename(file)
+    for (file_url, filename, date) in filelist:
+        file_base = os.path.basename(filename)
 
         if os.path.exists(file_base):
             print(f"{file_base} already exists")
             continue
 
-        print('Downloading', filename)
-        req = requests.get(filename, stream=True)
+        print('Downloading', file_url)
+        req = requests.get(file_url, stream=True)
         filesize = int(req.headers['Content-length'])
         with open(file_base, 'wb') as outfile:
             chunk_size=1048576
