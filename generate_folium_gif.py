@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import sys
 import time
 import imageio
 import json
@@ -23,19 +22,17 @@ from wrf import getvar, interplevel, to_np, latlon_coords
 from PIL import Image
 from pathlib import Path
 
-import selenium.webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium import webdriver
 
-options = Options()
-options.headless = True
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
 
-driver = selenium.webdriver.Firefox(executable_path='/usr/bin/geckodriver', options=options)
+driver = webdriver.Chrome(options=options)
 
-start_date = datetime.strptime(os.environ.get('START_DATE', None), '%Y-%m-%d %H')
-var_key = sys.argv[1]
-
-nc = NetCDFFile('./wrf_output')
-time_size = nc.dimensions['Time'].size
+nc_file = NetCDFFile('./wrf_output')
+time_size = nc_file.dimensions['Time'].size
 
 def get_data(nc_file: NetCDFFile, timeidx:int, dx: int):
     height = getvar(nc_file, 'height', timeidx=timeidx)
@@ -54,8 +51,8 @@ def get_data(nc_file: NetCDFFile, timeidx:int, dx: int):
     return (T, u, v, np.sqrt(u ** 2 + v ** 2 + w ** 2), P)
 
 
-def get_folium(nc_file: NetCDFFile, timeidx: int, var_key: str):
-    (T, U, V, mag, P) = get_data(nc_file, timeidx, dx=1000)
+def get_folium(nc_file: NetCDFFile, timeidx: int, nc_var: str, start_date: datetime):
+    (T, U, V, mag, P) = get_data(nc_file, timeidx, 250)
     (lats, lons) = latlon_coords(mag)
 
     figure = plt.figure()
@@ -69,7 +66,7 @@ def get_folium(nc_file: NetCDFFile, timeidx: int, var_key: str):
         'pressure': ('Pressure in hPa', P)
     }
 
-    (caption, variable) = variables[var_key]
+    (caption, variable) = variables[nc_var]
 
     contour = ax.contourf(lons, lats, variable, cmap=plt.cm.jet)
     cbar = figure.colorbar(contour)
@@ -77,9 +74,9 @@ def get_folium(nc_file: NetCDFFile, timeidx: int, var_key: str):
     gj = json.loads(geojsoncontour.contourf_to_geojson(contourf=contour, ndigits=3, unit='m'))
 
     folium_map = folium.Map(
-        location=[lats.mean() - 0.08, lons.mean()],
+        location=[lats.mean(), lons.mean()],
         tiles='Cartodb Positron',
-        zoom_start=10,
+        zoom_start=11,
         zoom_control=False,
         scrollWheelZoom=False,
         dragging=False
@@ -111,11 +108,11 @@ def get_folium(nc_file: NetCDFFile, timeidx: int, var_key: str):
     return (folium_map, figure)
 
 
-def get_image(timeidx: int, var_key: str):
-    (f_map, fig) = get_folium(nc, timeidx, var_key)
+def get_image(timeidx: int, nc_var: str, start_date: datetime):
+    (f_map, fig) = get_folium(nc_file, timeidx, nc_var, start_date)
 
-    html_file = f"{var_key}_{timeidx}.html"
-    png_file = f"{var_key}_{timeidx}.png"
+    html_file = f"{nc_var}_{timeidx}.html"
+    png_file = f"{nc_var}_{timeidx}.png"
 
     f_map.save(html_file)
 
@@ -133,6 +130,14 @@ def get_image(timeidx: int, var_key: str):
     return img
 
 if __name__ == '__main__':
-    results = [get_image(timeidx, var_key) for timeidx in range(time_size)]
+    Path('gif-images').mkdir(parents=True, exist_ok=True)
+    os.chdir('./gif-images')
 
-    imageio.mimwrite(f"{var_key}_{datetime.now()}.gif", results, fps=1)
+    start_date = datetime.strptime(os.environ.get('START_DATE', None), '%Y-%m-%d %H')
+    nc_variables = os.environ.get('NC_VARIABLES', None)
+
+    for nc_var in nc_variables.split(','):
+        results = [get_image(timeidx, nc_var, start_date) for timeidx in range(time_size)]
+        imageio.mimwrite(f"{nc_var}.gif", results, fps=1)
+
+    print("Data saved in ./gif-images")
