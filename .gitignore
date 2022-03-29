@@ -1,4 +1,5 @@
 *.nc
+*.grib2*
 *.dat
 *.ctl
 .nfs*
@@ -6,5 +7,4 @@
 gfs*
 wrf_output
 BAQ
-fnl*
 metar*

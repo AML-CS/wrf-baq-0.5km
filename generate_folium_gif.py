@@ -34,8 +34,10 @@ driver = webdriver.Chrome(options=options)
 nc_file = NetCDFFile('./wrf_output')
 time_size = nc_file.dimensions['Time'].size
 
-def get_data(nc_file: NetCDFFile, timeidx:int, dx: int):
+def get_data(nc_file: NetCDFFile, timeidx:int):
+    dx = 100
     height = getvar(nc_file, 'height', timeidx=timeidx)
+
     u_all = getvar(nc_file, 'ua', timeidx=timeidx)
     v_all = getvar(nc_file, 'va', timeidx=timeidx)
     w_all = getvar(nc_file, 'wa', timeidx=timeidx)
@@ -48,35 +50,36 @@ def get_data(nc_file: NetCDFFile, timeidx:int, dx: int):
     v = interplevel(v_all, height, dx)
     w = interplevel(w_all, height, dx)
 
-    return (T, u, v, np.sqrt(u ** 2 + v ** 2 + w ** 2), P)
+    data = {
+        'wind': ('Wind velocity in m/s', np.sqrt(u ** 2 + v ** 2 + w ** 2)),
+        'temp': ('Tempeture in celsius', T),
+        'uwind': ('U_Wind Velocity in m/s', u),
+        'vwind': ('V_Wind Velocity in m/s', v),
+        'press': ('Pressure in hPa', P)
+    }
+
+    return data
 
 
 def get_folium(nc_file: NetCDFFile, timeidx: int, nc_var: str, start_date: datetime):
-    (T, U, V, mag, P) = get_data(nc_file, timeidx, 250)
-    (lats, lons) = latlon_coords(mag)
+    data = get_data(nc_file, timeidx)
+
+    (caption, variable) = data[nc_var]
+
+    (lats, lons) = latlon_coords(variable)
 
     figure = plt.figure()
     ax = figure.add_subplot(111)
 
-    variables = {
-        'wind': ('Wind velocity in m/s', mag),
-        'temp': ('Tempeture in celsius', T),
-        'u_wind': ('U_Wind Velocity in m/s', U),
-        'v_wind': ('V_Wind Velocity in m/s', V),
-        'pressure': ('Pressure in hPa', P)
-    }
-
-    (caption, variable) = variables[nc_var]
-
     contour = ax.contourf(lons, lats, variable, cmap=plt.cm.jet)
     cbar = figure.colorbar(contour)
 
-    gj = json.loads(geojsoncontour.contourf_to_geojson(contourf=contour, ndigits=3, unit='m'))
+    gj = json.loads(geojsoncontour.contourf_to_geojson(contourf=contour, ndigits=6, unit='m'))
 
     folium_map = folium.Map(
         location=[lats.mean(), lons.mean()],
         tiles='Cartodb Positron',
-        zoom_start=11,
+        zoom_start=12,
         zoom_control=False,
         scrollWheelZoom=False,
         dragging=False
@@ -119,7 +122,7 @@ def get_image(timeidx: int, nc_var: str, start_date: datetime):
     driver.set_window_size(600, 600)
     driver.get(f"file://{os.getcwd()}/{html_file}")
 
-    time.sleep(2)
+    time.sleep(1)
     driver.save_screenshot(png_file)
 
     img = imageio.imread(png_file)
@@ -134,10 +137,12 @@ if __name__ == '__main__':
     os.chdir('./gif-images')
 
     start_date = datetime.strptime(os.environ.get('START_DATE', None), '%Y-%m-%d %H')
-    nc_variables = os.environ.get('NC_VARIABLES', None)
+    nc_variables = os.environ.get('NC_VARIABLES', None).split(',')
 
-    for nc_var in nc_variables.split(','):
+    for nc_var in nc_variables:
         results = [get_image(timeidx, nc_var, start_date) for timeidx in range(time_size)]
         imageio.mimwrite(f"{nc_var}.gif", results, fps=1)
+
+    driver.quit()
 
     print("Data saved in ./gif-images")
