@@ -126,8 +126,11 @@ def get_image(timeidx: int, nc_var: str, start_date: datetime):
     fig = build_fig(lats, lons, caption, variable, date)
 
     png_file = f"{nc_var}_{timeidx}.png"
+    try:
+        fig.write_image(png_file)
+    except Exception:
+        return None
 
-    fig.write_image(png_file)
     img = imageio.imread(png_file)
     os.remove(png_file)
 
@@ -146,6 +149,7 @@ if __name__ == '__main__':
         print(nc_var)
         results = [get_image(timeidx, nc_var, start_date)
                    for timeidx in range(time_size)]
-        imageio.mimwrite(f"{nc_var}.gif", results, fps=0.5)
+        imageio.mimwrite(f"{nc_var}.gif", [
+                         img for img in results if img is not None], fps=0.5)
 
     print("Data saved in ./gif-images")

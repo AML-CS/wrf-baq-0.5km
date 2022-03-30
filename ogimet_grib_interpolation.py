@@ -38,8 +38,8 @@ def load_metar(grbs, filename):
     metar = pd.read_hdf(filename)
 
     surface_temp = grbs.select(name='Temperature')[41]
-    surface_uwind = grbs.select(name='U component of wind')[44]
-    surface_vwind = grbs.select(name='V component of wind')[44]
+    surface_uwind = grbs.select(name='U component of wind')[41]
+    surface_vwind = grbs.select(name='V component of wind')[41]
     surface_press = grbs.select(name='Surface pressure')[0]
 
     reporter.add({

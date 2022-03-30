@@ -2,10 +2,13 @@
 
 wait_file() {
   local file="$1"; shift
-  local wait_seconds="${1:-1200}"; shift # 1200 seconds as default timeout
+  local wait_seconds="${1:-1800}"; shift # 30 minutes as default timeout
   until test $((wait_seconds--)) -eq 0 -o -e "$file" ; do sleep 1; done
   ((++wait_seconds))
 }
+
+WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-1km'
+cd $WORK_DIR
 
 module load wrf/4.3 miniconda
 
@@ -15,7 +18,7 @@ conda activate wrf-baq-1km
 rm -f ./report.json
 
 echo "Setting up env variables..."
-eval $(./set_env_variables.py)
+eval "$(./set_env_variables.py)"
 
 echo "*** Debugging parameters ***"
 echo "Start date: $START_DATE"

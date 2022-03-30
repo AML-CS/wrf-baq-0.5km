@@ -73,7 +73,7 @@ def get_variables(metar):
 
         temp = obs.temp.value(units='K')
         (uwind, vwind) = parse_wind_components(obs)
-        press = obs.press.value(units='HPA')
+        press = obs.press.value(units='HPA') * 100 # to Pa
 
         return [temp, uwind, vwind, press]
     except Exception as e:
