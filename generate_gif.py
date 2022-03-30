@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import os
-import re
 import imageio
 import json
 from pathlib import Path
@@ -14,7 +13,7 @@ import pandas as pd
 from netCDF4 import Dataset as NetCDFFile
 import matplotlib.pyplot as plt
 
-from wrf import getvar, interplevel, to_np, latlon_coords
+from wrf import getvar, interplevel, latlon_coords
 
 import plotly.graph_objects as go
 
@@ -49,30 +48,6 @@ def get_data(nc_file: NetCDFFile, timeidx: int):
     return data
 
 
-def geojson_title_to_float(title):
-    result = re.search(
-        r"([-]?([0-9]*[.])?[0-9]+)-([-]?([0-9]*[.])?[0-9]+)", title)
-    groups = result.groups()
-
-    value = np.median([float(groups[0]), float(groups[2])])
-
-    return value
-
-
-def gj_to_df(gj):
-    gj_data = np.zeros([len(gj['features']), 2])
-
-    for i in range(len(gj['features'])):
-        gj['features'][i]['id'] = i
-        gj_data[i, 0] = i
-        gj_data[i, 1] = geojson_title_to_float(
-            gj['features'][i]['properties']['title'])
-
-    df = pd.DataFrame(gj_data, columns=['id', 'variable'])
-
-    return df
-
-
 def get_folium(nc_file: NetCDFFile, timeidx: int, nc_var: str, start_date: datetime):
     date = start_date + timedelta(hours=timeidx * 3) - timedelta(hours=5)
 
@@ -85,7 +60,14 @@ def get_folium(nc_file: NetCDFFile, timeidx: int, nc_var: str, start_date: datet
 
     gj = json.loads(geojsoncontour.contourf_to_geojson(
         contourf=contour, ndigits=4, unit='m'))
-    df_contour = gj_to_df(gj)
+
+    gj_data = np.zeros([len(gj['features']), 2])
+    for i in range(len(gj['features'])):
+        gj['features'][i]['id'] = i
+        gj_data[i, 0] = i
+        gj_data[i, 1] = np.median([float(
+            val) for val in gj['features'][i]['properties']['title'].replace(' m', '').split('-')])
+    df_contour = pd.DataFrame(gj_data, columns=['id', 'variable'])
 
     trace = go.Choroplethmapbox(
         geojson=gj,
@@ -93,13 +75,13 @@ def get_folium(nc_file: NetCDFFile, timeidx: int, nc_var: str, start_date: datet
         z=df_contour.variable,
         colorscale='jet',
         marker_line_width=0.1,
-        marker=dict(opacity=0.2)
+        marker=dict(opacity=0.3)
     )
 
     layout = go.Layout(
         title=f"{caption} - {date}",
         title_x=0.5,
-        width=600,
+        height=500,
         margin=dict(t=26, b=0, l=0, r=0),
         font=dict(color='dark grey', size=10),
         mapbox=dict(
@@ -139,7 +121,6 @@ if __name__ == '__main__':
     nc_variables = os.environ.get('NC_VARIABLES', None).split(',')
 
     for nc_var in nc_variables:
-        print(nc_var)
         results = [get_image(timeidx, nc_var, start_date)
                    for timeidx in range(time_size)]
         imageio.mimwrite(f"{nc_var}.gif", results, fps=1)

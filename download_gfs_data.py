@@ -3,9 +3,11 @@
 import os
 import sys
 import requests
-import time
 from pathlib import Path
 from datetime import datetime, timedelta
+
+import reporter
+
 
 def check_file_status(filepath, filesize):
     sys.stdout.write('\r')
@@ -14,6 +16,7 @@ def check_file_status(filepath, filesize):
     percent_complete = (size/filesize)*100
     sys.stdout.write('%.3f %s' % (percent_complete, '% Completed'))
     sys.stdout.flush()
+
 
 if __name__ == '__main__':
     Path('gfs-data').mkdir(parents=True, exist_ok=True)
@@ -27,7 +30,7 @@ if __name__ == '__main__':
 
     start_date = datetime.strptime(gfs_start_date, '%Y-%m-%d %H')
 
-    links =  [(
+    links = [(
         start_date,
         str(index).zfill(3)
     ) for index in range(gfs_time_offset, gfs_interval_hours + 1, gfs_interval_forecast)]
@@ -38,9 +41,12 @@ if __name__ == '__main__':
             date,
             index
         ),
-        'gfs_{0:%Y}{0:%m}{0:%d}_{0:%H}_00.pgrb2.0p25'.format(date + timedelta(hours=int(index))),
+        'gfs_{0:%Y}{0:%m}{0:%d}_{0:%H}_00.pgrb2.0p25'.format(
+            date + timedelta(hours=int(index))),
         date
     ) for (date, index) in links]
+
+    reporter.add({'gfsUrls': [obj[0] for obj in filelist]})
 
     for (file_url, filename, date) in filelist:
         file_base = os.path.basename(filename)
@@ -53,7 +59,7 @@ if __name__ == '__main__':
         req = requests.get(file_url, stream=True)
         filesize = int(req.headers['Content-length'])
         with open(file_base, 'wb') as outfile:
-            chunk_size=1048576
+            chunk_size = 1048576
             for chunk in req.iter_content(chunk_size=chunk_size):
                 outfile.write(chunk)
                 if chunk_size < filesize:

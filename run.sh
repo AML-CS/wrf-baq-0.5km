@@ -9,6 +9,11 @@ wait_file() {
 
 module load wrf/4.3 miniconda
 
+eval "$(conda shell.bash hook)"
+conda activate wrf-baq-1km
+
+rm -f ./report.json
+
 echo "Setting up env variables..."
 eval $(./set_env_variables.py)
 
@@ -25,9 +30,6 @@ echo "GFS interval forecast: $GFS_INTERVAL_FORECAST"
 echo "NC variables: $NC_VARIABLES"
 echo "BAQ station coordinates: $BAQ_STATION_COORDINATES"
 echo "******"
-
-eval "$(conda shell.bash hook)"
-conda activate wrf-baq-1km
 
 ./download_gfs_data.py
 ./fetch_ogimet_data.py
@@ -49,9 +51,11 @@ wait_file "./wrf_output" && {
   echo "Uploading to aws..."
   for i in ${!nc_variables[@]}; do
     nc_var=${nc_variables[$i]}
-    aws s3api put-object --bucket wrf-baq-1km --key "$nc_var.gif" --body "./gif-images/$nc_var.gif"
-    aws s3api put-object-acl --bucket wrf-baq-1km --key "$nc_var.gif" --acl public-read
+    aws s3api put-object --bucket wrf-baq-1km --key "last/$nc_var.gif" --body "./gif-images/$nc_var.gif"
+    aws s3api put-object-acl --bucket wrf-baq-1km --key "last/$nc_var.gif" --acl public-read
   done
+
+  python -c 'import reporter; reporter.upload()'
 }
 
 echo "Done!"
