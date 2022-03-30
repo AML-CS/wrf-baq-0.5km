@@ -17,9 +17,6 @@ rm -f ./report.json
 echo "Setting up env variables..."
 eval $(./set_env_variables.py)
 
-# export NC_VARIABLES="wind,temp,uwind,vwind,press"
-# export START_DATE="2022-03-29 06"
-
 echo "*** Debugging parameters ***"
 echo "Start date: $START_DATE"
 echo "End date: $END_DATE"
@@ -46,7 +43,7 @@ wait_file "./wrf_output" && {
   cat slurm.out.log
 
   echo "Generating gifs..."
-  ./generate_folium_gif.py
+  ./generate_gifs.py
 
   echo "Uploading to aws..."
   for i in ${!nc_variables[@]}; do

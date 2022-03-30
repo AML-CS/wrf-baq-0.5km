@@ -39,10 +39,10 @@ def get_data(nc_file: NetCDFFile, timeidx: int):
     w = interplevel(w_all, height, dx)
 
     data = {
-        'wind': ('Wind velocity (m/s)', np.sqrt(u ** 2 + v ** 2 + w ** 2)),
+        'wind': ('Wind speed (m/s)', np.sqrt(u ** 2 + v ** 2)),
         'temp': ('Temperature (C)', T),
-        'uwind': ('U wind velocity (m/s)', u),
-        'vwind': ('V wind velocity (m/s)', v),
+        'uwind': ('U wind speed (m/s)', u),
+        'vwind': ('V wind speed (m/s)', v),
         'press': ('Pressure (hPa)', P)
     }
 
@@ -73,35 +73,33 @@ def gj_to_df(gj):
     return df
 
 
-def get_folium(nc_file: NetCDFFile, timeidx: int, nc_var: str, start_date: datetime):
-    date = start_date + timedelta(hours=timeidx * 3) - timedelta(hours=5)
-
-    data = get_data(nc_file, timeidx)
-
-    (caption, variable) = data[nc_var]
-    (lats, lons) = latlon_coords(variable)
-
+def build_fig(lats, lons, caption, variable, date):
     contour = plt.contourf(lons, lats, variable, cmap=plt.cm.jet)
 
     gj = json.loads(geojsoncontour.contourf_to_geojson(
         contourf=contour, ndigits=4, unit='m'))
     df_contour = gj_to_df(gj)
 
+    zmin = df_contour.variable.min() - df_contour.variable.median() / 10
+    zmax = df_contour.variable.max() + df_contour.variable.median() / 10
+
     trace = go.Choroplethmapbox(
         geojson=gj,
         locations=df_contour.id,
         z=df_contour.variable,
+        zmin=zmin,
+        zmax=zmax,
         colorscale='jet',
         marker_line_width=0.1,
         marker=dict(opacity=0.2)
     )
 
     layout = go.Layout(
-        title=f"{caption} - {date}",
+        title=f"{caption} - {date} GMT-5",
         title_x=0.5,
         width=600,
         margin=dict(t=26, b=0, l=0, r=0),
-        font=dict(color='dark grey', size=10),
+        font=dict(color='black', size=10),
         mapbox=dict(
             center=dict(
                 lat=lats.mean().item(0),
@@ -118,13 +116,19 @@ def get_folium(nc_file: NetCDFFile, timeidx: int, nc_var: str, start_date: datet
 
 
 def get_image(timeidx: int, nc_var: str, start_date: datetime):
+    date = start_date + timedelta(hours=timeidx * 3) - timedelta(hours=5)
+
+    data = get_data(nc_file, timeidx)
+
+    (caption, variable) = data[nc_var]
+    (lats, lons) = latlon_coords(variable)
+
+    fig = build_fig(lats, lons, caption, variable, date)
+
     png_file = f"{nc_var}_{timeidx}.png"
 
-    fig = get_folium(nc_file, timeidx, nc_var, start_date)
     fig.write_image(png_file)
-
     img = imageio.imread(png_file)
-
     os.remove(png_file)
 
     return img
@@ -142,6 +146,6 @@ if __name__ == '__main__':
         print(nc_var)
         results = [get_image(timeidx, nc_var, start_date)
                    for timeidx in range(time_size)]
-        imageio.mimwrite(f"{nc_var}.gif", results, fps=1)
+        imageio.mimwrite(f"{nc_var}.gif", results, fps=0.5)
 
     print("Data saved in ./gif-images")
