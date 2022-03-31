@@ -2,7 +2,6 @@
 
 import os
 import re
-import time
 from pathlib import Path
 from datetime import datetime
 
@@ -95,8 +94,8 @@ if __name__ == '__main__':
         'BAQ_STATION_COORDINATES', None).split(',')
     station_coords = [float(station_lat), float(station_lon)]
 
-    gfs_interval_forecast = gfs_interval_forecast = int(
-        os.environ.get('GFS_INTERVAL_FORECAST', 0))
+    wrf_interval_hours = wrf_interval_hours = int(
+        os.environ.get('WRF_INTERVAL_HOURS', 0))
     start_date = datetime.strptime(
         os.environ.get('START_DATE', None), '%Y-%m-%d %H')
     end_date = datetime.strptime(
@@ -118,7 +117,7 @@ if __name__ == '__main__':
 
         vars_acum.append(variables)
 
-        if date.hour % gfs_interval_forecast == 0:
+        if date.hour % wrf_interval_hours == 0:
             save_hdf(date, station_coords, np.median(vars_acum, axis=0))
             vars_acum = []
 

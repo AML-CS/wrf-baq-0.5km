@@ -2,6 +2,7 @@
 
 import os
 import sys
+import glob
 import requests
 from pathlib import Path
 from datetime import datetime, timedelta
@@ -18,14 +19,21 @@ def check_file_status(filepath, filesize):
     sys.stdout.flush()
 
 
+def clean_folder():
+    gfs_files = glob.glob('../gfs-data/*')
+    if len(gfs_files) > 3:
+        os.system(f"rm -f {' '.join(gfs_files[:3])}")
+
+
 if __name__ == '__main__':
     Path('gfs-data').mkdir(parents=True, exist_ok=True)
     os.chdir('./gfs-data')
+    clean_folder()
 
     dspath = os.environ.get('DS_PATH', None)
     gfs_start_date = os.environ.get('GFS_START_DATE', None)
     gfs_time_offset = int(os.environ.get('GFS_TIME_OFFSET', 0))
-    gfs_interval_forecast = int(os.environ.get('GFS_INTERVAL_FORECAST', 0))
+    wrf_interval_hours = int(os.environ.get('WRF_INTERVAL_HOURS', 0))
     gfs_interval_hours = int(os.environ.get('GFS_INTERVAL_HOURS', 0))
 
     start_date = datetime.strptime(gfs_start_date, '%Y-%m-%d %H')
@@ -33,7 +41,7 @@ if __name__ == '__main__':
     links = [(
         start_date,
         str(index).zfill(3)
-    ) for index in range(gfs_time_offset, gfs_interval_hours + 1, gfs_interval_forecast)]
+    ) for index in range(gfs_time_offset, gfs_interval_hours + 1, wrf_interval_hours)]
 
     filelist = [(
         '{0}gfs.{1:%Y}{1:%m}{1:%d}/{1:%H}/atmos/gfs.t{1:%H}z.pgrb2.0p25.f{2}'.format(

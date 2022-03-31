@@ -4,7 +4,7 @@ import os
 import json
 import subprocess
 
-dir = os.environ.get('CURRENT_DIRECTORY', './')
+dir = os.environ.get('WORK_DIR', './')
 REPORT_FILENAME = f"{dir}/report.json"
 
 def read_file():

@@ -43,7 +43,7 @@ def load_metar(grbs, filename):
     surface_press = grbs.select(name='Surface pressure')[0]
 
     reporter.add({
-        'variablesInterpolated': [
+        'interpolatedVariables': [
             f"{surface_temp}",
             f"{surface_uwind}",
             f"{surface_vwind}",
