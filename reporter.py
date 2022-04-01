@@ -2,10 +2,9 @@
 
 import os
 import json
-import subprocess
 
 dir = os.environ.get('WORK_DIR', './')
-REPORT_FILENAME = f"{dir}/report.json"
+REPORT_FILENAME = f"{dir}/output/report.json"
 
 def read_file():
     if os.path.exists(REPORT_FILENAME):
@@ -29,10 +28,3 @@ def add(new_data: dict, logger=True):
 
     data = read_file()
     update_file(data | new_data)
-
-
-def upload():
-    subprocess.run(['aws', 's3api', 'put-object', '--bucket=wrf-baq-1km',
-                   f"--key=last/report.json", f"--body={REPORT_FILENAME}"])
-    subprocess.run(['aws', 's3api', 'put-object-acl', '--bucket=wrf-baq-1km',
-                   f"--key=last/report.json", '--acl', 'public-read'])

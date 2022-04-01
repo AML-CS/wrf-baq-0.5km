@@ -3,7 +3,7 @@
 WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-1km'
 cd $WORK_DIR
 
-module load wrf/4.3 miniconda
+module load wrf/4.3-baq-1km miniconda
 
 eval "$(conda shell.bash hook)"
 conda activate wrf-baq-1km
@@ -12,6 +12,7 @@ echo "Setting up env variables..."
 eval $(./set_env_variables.py)
 
 echo "*** Debugging parameters ***"
+echo "Created at: $CREATED_AT"
 echo "Start date: $START_DATE"
 echo "End date: $END_DATE"
 echo "WRF interval hours: $WRF_INTERVAL_HOURS"
@@ -21,5 +22,3 @@ echo "GFS interval hours: $GFS_INTERVAL_HOURS"
 echo "NC variables: $NC_VARIABLES"
 echo "BAQ station coordinates: $BAQ_STATION_COORDINATES"
 echo "******"
-
-run-wps --help

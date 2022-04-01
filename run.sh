@@ -8,19 +8,22 @@ wait_file() {
 }
 
 export WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-1km'
+export AMLCS_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-1km/AML-CS.github.io'
+
 cd $WORK_DIR
 
-module load wrf/4.3 miniconda
+module load wrf/4.3-baq-1km miniconda
 
 eval "$(conda shell.bash hook)"
 conda activate wrf-baq-1km
 
-rm -f ./report.json
+rm -f ./output/report.json
 
 echo "Setting up env variables..."
 eval "$(./set_env_variables.py)"
 
 echo "*** Debugging parameters ***"
+echo "Created at: $CREATED_AT"
 echo "Start date: $START_DATE"
 echo "End date: $END_DATE"
 echo "WRF interval hours: $WRF_INTERVAL_HOURS"
@@ -40,22 +43,21 @@ run-wps "$START_DATE" "$END_DATE" -i 3 --data-dir ./gfs-data
 rm -f ./wrf_output
 sbatch ./sbatch-run.sh
 
-nc_variables=(${NC_VARIABLES//,/ })
-
 wait_file "./wrf_output" && {
   cat slurm.out.log
 
   echo "Generating gifs..."
-  ./generate_gifs.py
+  ./build_maps.py
 
-  echo "Uploading to aws..."
-  for i in ${!nc_variables[@]}; do
-    nc_var=${nc_variables[$i]}
-    aws s3api put-object --bucket wrf-baq-1km --key "last/$nc_var.gif" --body "./gif-images/$nc_var.gif"
-    aws s3api put-object-acl --bucket wrf-baq-1km --key "last/$nc_var.gif" --acl public-read
-  done
+  echo "Uploading to Github..."
+  cp -R ./output/* $AMLCS_DIR/content/wrf-baq-1km/output
 
-  python -c 'import reporter; reporter.upload()'
+  cd $AMLCS_DIR
+
+  git pull
+  git add content/wrf-baq-1km/output/
+  git commit -m "auto [$CREATED_AT]: update wrf-baq-1km output"
+  git push
 }
 
 echo "Done!"

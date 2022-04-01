@@ -23,10 +23,10 @@ if __name__ == '__main__':
     DS_PATH = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/'
 
     res = requests.get(
-        '{1}gfs.{0:%Y}{0:%m}{0:%d}/{0:%H}/atmos'.format(
+        '{1}gfs.{0:%Y}{0:%m}{0:%d}/{0:%H}/atmos/gfs.t{0:%H}z.pgrb2.0p25.f000'.format(
             gfs_start_date, DS_PATH)
     )
-    if 'pgrb2.0p25' not in res.text:
+    if res.status_code != 200 or 'pgrb2.0p25' not in res.text:
         gfs_start_date -= timedelta(hours=gfs_interval_hours)
         gfs_time_offset += gfs_interval_hours
         gfs_interval_hours += gfs_interval_hours
@@ -41,13 +41,15 @@ if __name__ == '__main__':
 
     WRF_OUTPUT = os.path.abspath('./wrf_output')
 
-    NC_VARIABLES = "wind,temp,uwind,vwind,press"
+    NC_VARIABLES = "pwater,temp,wind,uwind,vwind,press"
 
     # 10° 53' N, 074° 47' W
     BAQ_STATION_COORDINATES = "10.883333,-74.783333"
 
+    CREATED_AT = datetime.utcnow().strftime('%Y-%m-%d %H:%M')
+
     reporter.add({
-        'createdAt': datetime.utcnow().strftime('%Y-%m-%d %H:%M'),
+        'createdAt': CREATED_AT,
         'startDate': START_DATE,
         'endDate': END_DATE,
         'ncVariables': NC_VARIABLES.split(','),
@@ -55,6 +57,7 @@ if __name__ == '__main__':
     }, logger=False)
 
     print(f"""
+		export CREATED_AT='{CREATED_AT}';
 		export START_DATE='{START_DATE}';
 		export END_DATE='{END_DATE}';
 		export WRF_INTERVAL_HOURS='{WRF_INTERVAL_HOURS}';
