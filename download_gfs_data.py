@@ -20,15 +20,15 @@ def check_file_status(filepath, filesize):
 
 
 def clean_folder():
-    gfs_files = glob.glob('../gfs-data/*')
-    if len(gfs_files) > 3:
-        os.system(f"rm -f {' '.join(gfs_files[:3])}")
+    gfs_files = glob.glob('./gfs-data/*')
+    outdated = len(gfs_files) - 3
+    if outdated > 0:
+        os.system(f"rm -f {' '.join(gfs_files[:outdated])}")
 
 
 if __name__ == '__main__':
     Path('gfs-data').mkdir(parents=True, exist_ok=True)
     os.chdir('./gfs-data')
-    clean_folder()
 
     dspath = os.environ.get('DS_PATH', None)
     gfs_start_date = os.environ.get('GFS_START_DATE', None)
@@ -49,8 +49,10 @@ if __name__ == '__main__':
             date,
             index
         ),
-        'gfs_{0:%Y}{0:%m}{0:%d}_{0:%H}_00.pgrb2.0p25'.format(
-            date + timedelta(hours=int(index))),
+        'gfs_{0:%Y}{0:%m}{0:%d}_{0:%H}_00.pgrb2.0p25.t{1}z'.format(
+            date + timedelta(hours=int(index)),
+            index
+        ),
         date
     ) for (date, index) in links]
 

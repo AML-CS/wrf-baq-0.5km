@@ -78,8 +78,8 @@ if __name__ == '__main__':
     for metar_file in glob.glob('./ogimet-data/*.h5'):
         date = datetime.strptime(
             metar_file, './ogimet-data/metar_%Y%m%d_%H_00.h5')
-        grib_file = './gfs-data/gfs_{0:%Y}{0:%m}{0:%d}_{0:%H}_00.pgrb2.0p25'.format(
-            date)
+        grib_file = './gfs-data/gfs_{0:%Y}{0:%m}{0:%d}_{0:%H}_00.pgrb2.0p25.*'.format(date)
+        grib_file = glob.glob(grib_file)[0]
 
         print(f"Interpolate {grib_file}, based on {metar_file}")
 

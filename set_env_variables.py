@@ -22,14 +22,14 @@ if __name__ == '__main__':
 
     DS_PATH = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod/'
 
-    res = requests.get(
-        '{1}gfs.{0:%Y}{0:%m}{0:%d}/{0:%H}/atmos/gfs.t{0:%H}z.pgrb2.0p25.f000'.format(
-            gfs_start_date, DS_PATH)
-    )
-    if res.status_code != 200 or 'pgrb2.0p25' not in res.text:
-        gfs_start_date -= timedelta(hours=gfs_interval_hours)
-        gfs_time_offset += gfs_interval_hours
-        gfs_interval_hours += gfs_interval_hours
+    # res = requests.get(
+    #     '{1}gfs.{0:%Y}{0:%m}{0:%d}/{0:%H}/atmos/gfs.t{0:%H}z.pgrb2.0p25.f000'.format(
+    #         gfs_start_date, DS_PATH)
+    # )
+    # if res.status_code != 200 or 'gfs.t{0:%H}z.pgrb2.0p25.f000'.format(gfs_start_date) not in res.text:
+    #     gfs_start_date -= timedelta(hours=gfs_interval_hours)
+    #     gfs_time_offset += gfs_interval_hours
+    #     gfs_interval_hours += gfs_interval_hours
 
     # GFS data cycle: 6h (each 6h it's available the next 24h forecast with 3h interval)
     GFS_START_DATE = gfs_start_date.strftime('%Y-%m-%d %H')

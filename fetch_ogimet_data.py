@@ -72,7 +72,7 @@ def get_variables(metar):
 
         temp = obs.temp.value(units='K')
         (uwind, vwind) = parse_wind_components(obs)
-        press = obs.press.value(units='HPA') * 100 # to Pa
+        press = obs.press.value(units='HPA') * 100  # to Pa
 
         return [temp, uwind, vwind, press]
     except Exception as e:
@@ -113,7 +113,10 @@ if __name__ == '__main__':
         variables = get_variables(row['metar'])
 
         if variables is None:
-            continue
+            if len(vars_acum) > 0:
+                variables = vars_acum[-1]
+            else:
+                continue
 
         vars_acum.append(variables)
 
