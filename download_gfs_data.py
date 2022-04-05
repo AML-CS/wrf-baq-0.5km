@@ -28,9 +28,8 @@ def clean_folder():
 
 if __name__ == '__main__':
     Path('gfs-data').mkdir(parents=True, exist_ok=True)
-    os.chdir('./gfs-data')
-
     clean_folder()
+    os.chdir('./gfs-data')
 
     dspath = os.environ.get('DS_PATH', None)
     gfs_start_date = os.environ.get('GFS_START_DATE', None)

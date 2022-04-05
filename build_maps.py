@@ -31,7 +31,7 @@ with open('./Limite Distrito de Barranquilla.geojson') as f:
 
 
 def get_data(nc_file: NetCDFFile, timeidx: int):
-    dx = 150
+    desiredlev = 150
     height = wrf.getvar(nc_file, 'height', timeidx=timeidx)
 
     u_all = wrf.getvar(nc_file, 'ua', timeidx=timeidx)
@@ -40,10 +40,10 @@ def get_data(nc_file: NetCDFFile, timeidx: int):
     P_all = wrf.getvar(nc_file, 'pressure', timeidx=timeidx)
     pw = wrf.getvar(nc_file, 'pw', timeidx=timeidx)
 
-    P = wrf.interplevel(P_all, height, dx)
-    T = wrf.interplevel(T_all, height, dx)
-    u = wrf.interplevel(u_all, height, dx)
-    v = wrf.interplevel(v_all, height, dx)
+    P = wrf.interplevel(P_all, height, desiredlev)
+    T = wrf.interplevel(T_all, height, desiredlev)
+    u = wrf.interplevel(u_all, height, desiredlev)
+    v = wrf.interplevel(v_all, height, desiredlev)
 
     data = {
         'pwater': ('Precipitable Water (kg/m2)', pw),
@@ -123,7 +123,7 @@ def build_gif_frame(lats, lons, caption, variable, date):
     return fig
 
 
-def get_image(timeidx: int, nc_var: str, start_date: datetime):
+def get_image(timeidx: int, nc_var: str, start_date: datetime, created_at: datetime):
     date = start_date + timedelta(hours=timeidx * 3) - timedelta(hours=5)
 
     data = get_data(nc_file, timeidx)
@@ -143,12 +143,12 @@ def get_image(timeidx: int, nc_var: str, start_date: datetime):
     os.remove(png_file)
 
     if timeidx == time_size - 1:
-        build_folium_map(lats, lons, caption, variable, date)
+        build_folium_map(lats, lons, caption, variable, date, created_at)
 
     return img
 
 
-def build_folium_map(lats, lons, caption, variable, date):
+def build_folium_map(lats, lons, caption, variable, start_date, created_at):
     vmin = variable.min() - variable.median() / 10
     vmax = variable.max() + variable.median() / 10
 
@@ -208,14 +208,18 @@ def build_folium_map(lats, lons, caption, variable, date):
                 ).add_to(f_map)
 
     f_map.get_root().html.add_child(folium.Element(
-        '<p style="text-align:center;font-size:14px;margin:4px">{} GMT-5</p>'.format(date)))
+        '<p style="text-align:center;font-size:14px;margin:4px">{} GMT-5</p>'.format(start_date)))
 
-    f_map.save(f"{nc_var}.html")
+    f_map.save(f"{nc_var}_{created_at}.html")
 
 
 if __name__ == '__main__':
     Path('output').mkdir(parents=True, exist_ok=True)
+    os.system('rm -f ./output/*')
     os.chdir('./output')
+
+    created_at = datetime.strptime(
+        os.environ.get('CREATED_AT', None), '%Y-%m-%d %H:%M')
 
     start_date = datetime.strptime(
         os.environ.get('START_DATE', None), '%Y-%m-%d %H')
@@ -223,9 +227,9 @@ if __name__ == '__main__':
 
     for nc_var in nc_variables:
         print(nc_var)
-        results = [get_image(timeidx, nc_var, start_date)
+        results = [get_image(timeidx, nc_var, start_date, created_at)
                    for timeidx in range(time_size)]
-        imageio.mimwrite(f"{nc_var}.gif", [
+        imageio.mimwrite(f"{nc_var}_{created_at}.gif", [
                          img for img in results if img is not None], fps=0.5)
 
     print("Data saved in ./output")

@@ -1,12 +1,12 @@
 #!/usr/bin/env sh
 
-WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-1km'
+WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-0.5km'
 cd $WORK_DIR
 
-module load wrf/4.3-baq-1km miniconda
+module load wrf/4.3-baq-0.5km miniconda
 
 eval "$(conda shell.bash hook)"
-conda activate wrf-baq-1km
+conda activate wrf-baq-0.5km
 
 echo "Setting up env variables..."
 eval $(./set_env_variables.py)
