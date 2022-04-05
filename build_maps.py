@@ -2,10 +2,8 @@
 
 import os
 import re
-import time
 import imageio
 import json
-import glob
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -108,7 +106,6 @@ def build_gif_frame(lats, lons, caption, variable, date):
         title=f"{caption} - {date} GMT-5",
         title_x=0.5,
         width=600,
-        height=500,
         margin=dict(t=26, b=0, l=0, r=0),
         font=dict(color='black', size=10),
         mapbox=dict(
@@ -145,7 +142,7 @@ def get_image(timeidx: int, nc_var: str, start_date: datetime):
     img = imageio.imread(png_file)
     os.remove(png_file)
 
-    if (timeidx == 2):
+    if timeidx == time_size - 1:
         build_folium_map(lats, lons, caption, variable, date)
 
     return img
@@ -174,14 +171,13 @@ def build_folium_map(lats, lons, caption, variable, date):
             'color': x['properties']['stroke'],
             'weight': x['properties']['stroke-width'],
             'fillColor': x['properties']['fill'],
-            'opacity': 0.3,
+            'opacity': 0.3
         },
-        name='geojson'
+        name='contour'
     ).add_to(f_map)
 
     colormap = cm.LinearColormap(
-        colors=['darkblue', 'blue', 'cyan', 'green',
-                'greenyellow', 'yellow', 'orange', 'red', 'darkred'],
+        colors=['darkblue', 'blue', 'cyan', 'green', 'greenyellow', 'yellow', 'orange', 'red', 'darkred'],
         index=np.array(cbar.values),
         vmin=cbar.values[0],
         vmax=cbar.values[len(cbar.values) - 1],
@@ -189,31 +185,30 @@ def build_folium_map(lats, lons, caption, variable, date):
     )
     f_map.add_child(colormap)
 
+    folium.GeoJson(
+        baq_geojson,
+        style_function=lambda x: {
+            'color': 'rgb(12, 131, 242)',
+            'fillColor': 'rgba(255, 0, 0, 0)'
+        },
+        name='baq_map'
+    ).add_to(f_map)
+
     var_geo_bounds = wrf.geo_bounds(variable)
-
-    folium.GeoJson(baq_geojson).add_to(f_map)
-
-    data = []
     for lat in np.arange(var_geo_bounds.bottom_left.lat, var_geo_bounds.top_right.lat, 0.01):
         for lon in np.arange(var_geo_bounds.bottom_left.lon, var_geo_bounds.top_right.lon, 0.02):
             if baq_polygon.contains(Point(lon, lat)):
                 x, y = wrf.ll_to_xy(nc_file, lat, lon)
-                value = variable[x.item(0), y.item(0)].values.item(0)
-                data.append([lat, lon, round(value, 2)])
-
-    coords_df = pd.DataFrame(data, columns=['lat', 'lon', 'value'])
-    coords_df = coords_df.drop_duplicates(subset=['value'])
-
-    for index, row in coords_df.iterrows():
-        folium.Marker(
-            location=[row['lat'], row['lon']],
-            popup=None,
-            icon=folium.DivIcon(
-                html=f"""<span style="font-size: 16px; color: yellow; -webkit-text-stroke: 1px black;">{row['value']}</span>""")
-        ).add_to(f_map)
+                value = round(variable[x.item(0), y.item(0)].values.item(0), 2)
+                folium.Marker(
+                    location=[lat, lon],
+                    popup=None,
+                    icon=folium.DivIcon(
+                        html=f"""<span style="font-size: 16px; color: yellow; -webkit-text-stroke: 1px black;">{value}</span>""")
+                ).add_to(f_map)
 
     f_map.get_root().html.add_child(folium.Element(
-        '<p style="text-align:center;font-size:14px;margin:4px">{}</p>'.format(date)))
+        '<p style="text-align:center;font-size:14px;margin:4px">{} GMT-5</p>'.format(date)))
 
     f_map.save(f"{nc_var}.html")
 

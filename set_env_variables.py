@@ -33,7 +33,7 @@ if __name__ == '__main__':
 
     # GFS data cycle: 6h (each 6h it's available the next 24h forecast with 3h interval)
     GFS_START_DATE = gfs_start_date.strftime('%Y-%m-%d %H')
-    GFS_TIME_OFFSET = gfs_time_offset - gfs_time_offset % 6
+    GFS_TIME_OFFSET = gfs_time_offset - gfs_time_offset % 3
     GFS_INTERVAL_HOURS = gfs_interval_hours
 
     START_DATE = start_date.strftime('%Y-%m-%d %H')

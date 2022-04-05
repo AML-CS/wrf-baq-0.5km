@@ -1,8 +1,8 @@
 &share
  wrf_core = 'ARW',
  max_dom = 1,
- start_date = '2022-04-02_15:00:00',
- end_date = '2022-04-02_21:00:00',
+ start_date = '2022-04-04_12:00:00',
+ end_date = '2022-04-04_18:00:00',
  interval_seconds = 10800,
  io_form_geogrid = 2,
 /
@@ -23,7 +23,7 @@
  truelat1  = 10.981,
  truelat2  = 10.981,
  stand_lon = -74.822,
- geog_data_path = '/work/syseng/pub/WRFV4.3-baq-1km/data/WPS_GEOG/'
+ geog_data_path = '/work/syseng/pub/WRFV4.3-baq-0.5km/data/WPS_GEOG/'
  ref_x = 45.5,
  ref_y = 41.0,
 /

@@ -7,15 +7,15 @@ wait_file() {
   ((++wait_seconds))
 }
 
-export WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-1km'
-export AMLCS_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-1km/AML-CS.github.io'
+export WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-0.5km'
+export AMLCS_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-0.5km/AML-CS.github.io'
 
 cd $WORK_DIR
 
-module load wrf/4.3-baq-1km miniconda
+module load wrf/4.3-baq-0.5km miniconda
 
 eval "$(conda shell.bash hook)"
-conda activate wrf-baq-1km
+conda activate wrf-baq-0.5km
 
 rm -f ./output/report.json
 
@@ -50,13 +50,13 @@ wait_file "./wrf_output" && {
   ./build_maps.py
 
   echo "Uploading to Github..."
-  cp -R ./output/* $AMLCS_DIR/content/wrf-baq-1km/output
+  cp -R ./output/* $AMLCS_DIR/content/wrf-baq-0.5km/output
 
   cd $AMLCS_DIR
 
   git pull
-  git add content/wrf-baq-1km/output/
-  git commit -m "auto [$CREATED_AT]: update wrf-baq-1km output"
+  git add content/wrf-baq-0.5km/output/
+  git commit -m "auto [$CREATED_AT]: update wrf-baq-0.5km output"
   git push
 }
 
