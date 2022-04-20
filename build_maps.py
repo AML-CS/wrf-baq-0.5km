@@ -123,7 +123,7 @@ def build_gif_frame(lats, lons, caption, variable, date):
     return fig
 
 
-def get_image(timeidx: int, nc_var: str, start_date: datetime, created_at: datetime):
+def get_image(timeidx: int, nc_var: str, start_date: datetime):
     date = start_date + timedelta(hours=timeidx * 3) - timedelta(hours=5)
 
     data = get_data(nc_file, timeidx)
@@ -143,12 +143,12 @@ def get_image(timeidx: int, nc_var: str, start_date: datetime, created_at: datet
     os.remove(png_file)
 
     if timeidx == time_size - 1:
-        build_folium_map(lats, lons, caption, variable, date, created_at)
+        build_folium_map(lats, lons, caption, variable, date)
 
     return img
 
 
-def build_folium_map(lats, lons, caption, variable, start_date, created_at):
+def build_folium_map(lats, lons, caption, variable, start_date):
     vmin = variable.min() - variable.median() / 10
     vmax = variable.max() + variable.median() / 10
 
@@ -210,7 +210,7 @@ def build_folium_map(lats, lons, caption, variable, start_date, created_at):
     f_map.get_root().html.add_child(folium.Element(
         '<p style="text-align:center;font-size:14px;margin:4px">{} GMT-5</p>'.format(start_date)))
 
-    f_map.save(f"{nc_var}_{created_at}.html")
+    f_map.save(f"{nc_var}.html")
 
 
 if __name__ == '__main__':
@@ -218,18 +218,15 @@ if __name__ == '__main__':
     os.system('rm -f ./output/*.gif ./output/*.html')
     os.chdir('./output')
 
-    created_at = datetime.strptime(
-        os.environ.get('CREATED_AT', None), '%Y-%m-%d %H:%M')
-
     start_date = datetime.strptime(
         os.environ.get('START_DATE', None), '%Y-%m-%d %H')
     nc_variables = os.environ.get('NC_VARIABLES', None).split(',')
 
     for nc_var in nc_variables:
         print(nc_var)
-        results = [get_image(timeidx, nc_var, start_date, created_at)
+        results = [get_image(timeidx, nc_var, start_date)
                    for timeidx in range(time_size)]
-        imageio.mimwrite(f"{nc_var}_{created_at}.gif", [
+        imageio.mimwrite(f"{nc_var}.gif", [
                          img for img in results if img is not None], fps=0.5)
 
     print("Data saved in ./output")

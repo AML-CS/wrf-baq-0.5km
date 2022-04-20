@@ -8,7 +8,6 @@ wait_file() {
 }
 
 export WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-0.5km'
-
 cd $WORK_DIR
 
 module load wrf/4.3-baq-0.5km miniconda
@@ -16,7 +15,7 @@ module load wrf/4.3-baq-0.5km miniconda
 eval "$(conda shell.bash hook)"
 conda activate wrf-baq-0.5km
 
-rm -f ./output/report.json
+rm -f ./output/*
 
 echo "Setting up env variables..."
 eval "$(./set_env_variables.py)"

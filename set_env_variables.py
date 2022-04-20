@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
 import os
-import requests
 from datetime import datetime, timedelta
 
 import reporter
 
 if __name__ == '__main__':
+    NOAA_AWS_BUCKET = 'noaa-gfs-bdp-pds'
+    NC_VARIABLES = "pwater,temp,wind,uwind,vwind,press"
+    # 10° 53' N, 074° 47' W
+    BAQ_STATION_COORDINATES = "10.883333,-74.783333"
+
     WRF_INTERVAL_HOURS = 3
     gfs_interval_hours = 6
 
@@ -30,7 +34,13 @@ if __name__ == '__main__':
         end_date += timedelta(hours=WRF_INTERVAL_HOURS)
         gfs_interval_hours += WRF_INTERVAL_HOURS
 
-    NOAA_AWS_BUCKET = 'noaa-gfs-bdp-pds'
+    key = 's3://{1}/gfs.{0:%Y}{0:%m}{0:%d}/{0:%H}/atmos/gfs.t{0:%H}z.pgrb2.0p25.f000'.format(
+        gfs_start_date, NOAA_AWS_BUCKET)
+    exit_code = os.system(f"aws s3 ls --no-sign-request {key}")
+    if exit_code != 0:
+        gfs_start_date -= timedelta(hours=gfs_interval_hours)
+        gfs_time_offset += gfs_interval_hours
+        gfs_interval_hours += gfs_interval_hours
 
     GFS_START_DATE = gfs_start_date.strftime('%Y-%m-%d %H')
     GFS_TIME_OFFSET = gfs_time_offset - gfs_time_offset % 3
@@ -42,11 +52,6 @@ if __name__ == '__main__':
     CREATED_AT = utcnow.strftime('%Y-%m-%d %H:%M')
 
     WRF_OUTPUT = os.path.abspath('./wrf_output')
-
-    NC_VARIABLES = "pwater,temp,wind,uwind,vwind,press"
-
-    # 10° 53' N, 074° 47' W
-    BAQ_STATION_COORDINATES = "10.883333,-74.783333"
 
     reporter.add({
         'createdAt': CREATED_AT,
