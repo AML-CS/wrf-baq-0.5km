@@ -97,9 +97,9 @@ if __name__ == '__main__':
     wrf_interval_hours = wrf_interval_hours = int(
         os.environ.get('WRF_INTERVAL_HOURS', 0))
     start_date = datetime.strptime(
-        os.environ.get('START_DATE', None), '%Y-%m-%d %H')
+        os.environ.get('OGIMET_START_DATE', None), '%Y-%m-%d %H')
     end_date = datetime.strptime(
-        os.environ.get('END_DATE', None), '%Y-%m-%d %H')
+        os.environ.get('OGIMET_END_DATE', None), '%Y-%m-%d %H')
 
     Path('ogimet-data').mkdir(parents=True, exist_ok=True)
     os.system('rm -f ./ogimet-data/*.h5')

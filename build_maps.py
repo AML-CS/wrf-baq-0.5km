@@ -215,7 +215,7 @@ def build_folium_map(lats, lons, caption, variable, start_date, created_at):
 
 if __name__ == '__main__':
     Path('output').mkdir(parents=True, exist_ok=True)
-    os.system('rm -f ./output/*')
+    os.system('rm -f ./output/*.gif ./output/*.html')
     os.chdir('./output')
 
     created_at = datetime.strptime(

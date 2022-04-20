@@ -3,7 +3,7 @@
 import os
 import json
 
-dir = os.environ.get('WORK_DIR', './')
+dir = os.environ.get('WORK_DIR', '.')
 REPORT_FILENAME = f"{dir}/output/report.json"
 
 def read_file():

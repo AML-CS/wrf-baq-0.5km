@@ -8,7 +8,6 @@ wait_file() {
 }
 
 export WORK_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-0.5km'
-export AMLCS_DIR='/work/syseng/users/sjdonado/workspace/wrf-baq-0.5km/AML-CS.github.io'
 
 cd $WORK_DIR
 
@@ -30,6 +29,8 @@ echo "WRF interval hours: $WRF_INTERVAL_HOURS"
 echo "GFS Start date: $GFS_START_DATE"
 echo "GFS Time offset: $GFS_TIME_OFFSET"
 echo "GFS interval hours: $GFS_INTERVAL_HOURS"
+echo "Ogimet Start Date: $OGIMET_START_DATE"
+echo "Ogimet End Date: $OGIMET_END_DATE"
 echo "NC variables: $NC_VARIABLES"
 echo "BAQ station coordinates: $BAQ_STATION_COORDINATES"
 echo "******"
@@ -50,13 +51,10 @@ wait_file "./wrf_output" && {
   ./build_maps.py
 
   echo "Uploading to Github..."
-  cp -R ./output/* $AMLCS_DIR/content/wrf-baq-0.5km/output
-
-  cd $AMLCS_DIR
 
   git pull
-  git add content/wrf-baq-0.5km/output/
-  git commit -m "auto [$CREATED_AT]: update wrf-baq-0.5km output"
+  git add output
+  git commit -m "auto [$CREATED_AT]: BAQ 0.5km WRF output"
   git push
 }
 
