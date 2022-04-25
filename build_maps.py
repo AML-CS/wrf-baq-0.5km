@@ -124,7 +124,7 @@ def build_gif_frame(lats, lons, caption, variable, date):
 
 
 def get_image(timeidx: int, nc_var: str, start_date: datetime):
-    date = start_date + timedelta(hours=timeidx * 3) - timedelta(hours=5)
+    date = start_date + timedelta(hours=timeidx * time_size) - timedelta(hours=5)
 
     data = get_data(nc_file, timeidx)
 

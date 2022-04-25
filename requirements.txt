@@ -4,10 +4,12 @@ argon2-cffi @ file:///tmp/build/80754af9/argon2-cffi_1613037499734/work
 async-generator @ file:///home/ktietz/src/ci/async_generator_1611927993394/work
 attrs @ file:///tmp/build/80754af9/attrs_1620827162558/work
 autopep8==1.6.0
+awscli==1.22.98
 Babel @ file:///tmp/build/80754af9/babel_1620871417480/work
 backcall @ file:///home/ktietz/src/ci/backcall_1611930011877/work
 beautifulsoup4 @ file:///tmp/build/80754af9/beautifulsoup4_1631874778482/work
 bleach @ file:///tmp/build/80754af9/bleach_1612211392645/work
+botocore==1.24.43
 branca==0.4.2
 brotlipy==0.7.0
 Cartopy==0.19.0.post1
@@ -15,11 +17,13 @@ certifi==2021.10.8
 cffi @ file:///tmp/build/80754af9/cffi_1613246951236/work
 cftime @ file:///tmp/build/80754af9/cftime_1621823341290/work
 chardet @ file:///tmp/build/80754af9/chardet_1607706775000/work
+colorama==0.4.3
 cryptography @ file:///tmp/build/80754af9/cryptography_1616767007030/work
 cycler==0.10.0
 Cython==0.29.23
 decorator @ file:///tmp/build/80754af9/decorator_1621259047763/work
 defusedxml @ file:///tmp/build/80754af9/defusedxml_1615228127516/work
+docutils==0.15.2
 entrypoints==0.3
 folium==0.12.1.post1
 fonttools==4.31.2
@@ -34,6 +38,7 @@ ipython @ file:///home/conda/feedstock_root/build_artifacts/ipython_162267924258
 ipython-genutils @ file:///tmp/build/80754af9/ipython_genutils_1606773439826/work
 jedi @ file:///tmp/build/80754af9/jedi_1611333729159/work
 Jinja2 @ file:///tmp/build/80754af9/jinja2_1621238361758/work
+jmespath==1.0.0
 json5==0.9.5
 jsonschema @ file:///tmp/build/80754af9/jsonschema_1602607155483/work
 jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1616770841739/work
@@ -79,6 +84,7 @@ pooch==1.6.0
 prometheus-client @ file:///tmp/build/80754af9/prometheus_client_1618088486455/work
 prompt-toolkit @ file:///tmp/build/80754af9/prompt-toolkit_1616415428029/work
 ptyprocess @ file:///tmp/build/80754af9/ptyprocess_1609355006118/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl
+pyasn1==0.4.8
 pycodestyle==2.8.0
 pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
 Pygments @ file:///tmp/build/80754af9/pygments_1621606182707/work
@@ -92,8 +98,11 @@ pyshp==2.1.3
 PySocks @ file:///tmp/build/80754af9/pysocks_1605305812635/work
 python-dateutil @ file:///home/ktietz/src/ci/python-dateutil_1611928101742/work
 pytz @ file:///tmp/build/80754af9/pytz_1612215392582/work
+PyYAML==5.4.1
 pyzmq==20.0.0
 requests @ file:///tmp/build/80754af9/requests_1608241421344/work
+rsa==4.7.2
+s3transfer==0.5.2
 scipy @ file:///tmp/build/80754af9/scipy_1618855955483/work
 selenium==4.1.3
 Send2Trash @ file:///tmp/build/80754af9/send2trash_1607525499227/work

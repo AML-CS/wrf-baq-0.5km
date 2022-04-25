@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     key = 's3://{1}/gfs.{0:%Y}{0:%m}{0:%d}/{0:%H}/atmos/gfs.t{0:%H}z.pgrb2.0p25.f000'.format(
         gfs_start_date, NOAA_AWS_BUCKET)
-    exit_code = os.system(f"aws s3 ls --no-sign-request {key}")
+    exit_code = os.system(f"aws s3 ls --no-sign-request {key} >/dev/null 2>&1")
     if exit_code != 0:
         gfs_start_date -= timedelta(hours=gfs_interval_hours)
         gfs_time_offset += gfs_interval_hours
