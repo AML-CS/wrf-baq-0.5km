@@ -1,5 +1,7 @@
-# WRF BAQ 0.5km, an Internet weather forecasting system based on WRF simulations with GFS + OGIMET observations running on an HPC cluster.
-> ![arch-diagram](WRF-BAQ-0.5km.png)
+# WRF BAQ 0.5km Forecast
+> A web weather forecasting system based on GFS - NOAA data interpolated with METAR reports running every 3h on the Granado HPC cluster.
+
+![arch-diagram](WRF-BAQ-0.5km.png)
 
 ## Data
 
@@ -24,3 +26,8 @@
 cd /work/syseng/users/sjdonado/workspace/wrf-baq-0.5km
 ./run.sh
 ```
+
+## Docs
+
+- [WRF + WRFDA Granado HPC](https://aml-cs.github.io/posts/wrf-wrfda-syseng-unhpc/)
+- [Thesis report (Spanish)](https://docs.google.com/document/d/1ADC5PQXMw_4SefEPgx3IkGZfAmEkPHbyiehx4ZvuN44/edit?usp=sharing)
